@@ -1,0 +1,58 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      httpclient:
+        wiretap: true
+      httpserver:
+        wiretap: true
+      discovery:
+        locator:
+          enabled: true
+
+
+gateway:
+  cloud:
+    routes:
+      - id: xx-service
+        uri: http://test-url1
+        order: 100
+        predicates:
+          - Path=/xx-service/**
+        filters:
+          - RewritePath=/(?<segment>.*), /$\{segment}
+      - id: yy-service
+        uri: http://test-url2
+        order: 100
+        predicates:
+          - Path=/yy/**
+        filters:
+          - RewritePath=/(?<segment>.*), /$\{segment}
+
+debug:
+  enabled: ${DEBUG_ENABLE:true}
+  maingateway: ${MAIN_GATEWAY:http://10.0.0.197:8081}
+  cloud:
+    applications: ##id ler eslesmelidir
+      - id: xx-service
+        uri: http://localhost:81
+      - id: yy-service
+        uri: http://localhost:82
+
+server:
+  port: 8081
+  netty:
+    max-initial-line-length: 20MB
+    connection-timeout: 600
+  max-http-request-header-size: 80KB
+
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
