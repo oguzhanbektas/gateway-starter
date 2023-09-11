@@ -18,36 +18,45 @@ gateway:
   cloud:
     routes:
       - id: xx-service
-        uri: http://test-url1
+        uri: https://xx-url
         order: 100
         predicates:
           - Path=/xx-service/**
         filters:
           - RewritePath=/(?<segment>.*), /$\{segment}
       - id: yy-service
-        uri: http://test-url2
-        order: 100
+        uri: https://yy-url
+        order: 101
         predicates:
-          - Path=/yy/**
+          - Path=/yy-service/**
         filters:
           - RewritePath=/(?<segment>.*), /$\{segment}
 
 debug:
   enabled: ${DEBUG_ENABLE:true}
-  maingateway: ${MAIN_GATEWAY:http://10.0.0.197:8081}
+  maingateway: ${GATEWAY_URL:http://testUrl:8081}
   cloud:
     applications: ##id ler eslesmelidir
       - id: xx-service
-        uri: http://localhost:81
-      - id: yy-service
-        uri: http://localhost:82
+        uri: http://localhost:8085
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: DEBUG
+    reactor:
+      netty:
+        http:
+          client: DEBUG
 
 server:
+  max-http-header-size: 80KB
   port: 8081
   netty:
     max-initial-line-length: 20MB
     connection-timeout: 600
-  max-http-request-header-size: 80KB
 
 management:
   security:

@@ -13,7 +13,6 @@ public class RouteInfoProperty {
     private List<RoutePropertiesDto> routes;
 
     public List<RoutePropertiesDto> getRoutes() {
-
         return routes;
     }
 
